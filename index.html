@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Karcis Lelang — Jaringan UPT TPI Kabupaten Rembang</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          navy: '#1E2A44',
+          'navy-deep': '#0f1729',
+          gold: '#C7862B',
+          'gold-light': '#e6ac5c',
+          teal: '#2C7A72',
+          cream: '#F7F5F0',
+        }
+      }
+    }
+  }
+</script>
+<style>
+  :root{
+    --navy:#1E2A44; --navy-deep:#0f1729; --gold:#C7862B; --gold-light:#e6ac5c;
+    --teal:#2C7A72; --cream:#F7F5F0; --paper:#FFFFFF; --ink:#1E2A44; --muted:#6b7280;
+  }
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior: smooth; }
+  body{
+    margin:0; min-height:100vh;
+    font-family:'Plus Jakarta Sans', sans-serif; color:var(--ink);
+    background:
+      radial-gradient(circle at 15% 8%, rgba(199,134,43,.16), transparent 40%),
+      radial-gradient(circle at 85% 92%, rgba(44,122,114,.18), transparent 45%),
+      linear-gradient(180deg, var(--navy) 0%, var(--navy-deep) 100%);
+    background-attachment:fixed;
+    -webkit-font-smoothing:antialiased;
+  }
+  @media (prefers-reduced-motion: reduce){ *{ animation-duration:.001ms !important; transition-duration:.001ms !important; } }
+
+  .wrap{ width:100%; max-width:1200px; margin:0 auto; padding:40px 20px; animation:riseIn .5s cubic-bezier(.2,.8,.2,1) both; }
+  @keyframes riseIn{ from{ opacity:0; transform:translateY(14px); } to{ opacity:1; transform:translateY(0); } }
+
+  /* Ticket card component styling */
+  .ticket{
+    background:var(--paper); border-radius:24px; overflow:hidden;
+    box-shadow:0 24px 60px rgba(0,0,0,.35), 0 2px 8px rgba(0,0,0,.12);
+    display: flex; flex-direction: column; height: 100%;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .ticket:hover{
+    transform: translateY(-4px);
+    box-shadow: 0 30px 70px rgba(0,0,0,.45), 0 4px 12px rgba(0,0,0,.2);
+  }
+  .stub-top{
+    padding:28px 24px 20px; text-align:center;
+    background:linear-gradient(160deg, #ffffff, #fbf9f4);
+    position: relative;
+  }
+  .stub-top .badge{
+    width:48px; height:48px; margin:0 auto 12px; border-radius:14px;
+    background:linear-gradient(135deg, var(--navy), var(--navy-deep));
+    display:flex; align-items:center; justify-content:center; font-size:22px;
+    box-shadow:0 8px 20px rgba(30,42,68,.28);
+  }
+  .stub-top h2{
+    font-family:'Fraunces', serif; font-weight:600; font-size:20px; margin:0 0 2px; color:var(--navy);
+    letter-spacing:-.01em;
+  }
+  .stub-top .tpi-name{
+    font-family:'Fraunces', serif; font-weight:700; font-size:16px; color:var(--gold);
+  }
+  .stub-top p{
+    margin:10px 0 0; font-size:12.5px; line-height:1.5; color:var(--muted);
+  }
+
+  /* Perforation separator */
+  .perforation{
+    position:relative; height:0; border-top:2px dashed #d9d4c6; margin:0 20px;
+  }
+  .perforation::before, .perforation::after{
+    content:''; position:absolute; top:-11px; width:22px; height:22px; border-radius:50%;
+    background:linear-gradient(180deg, var(--navy) 0%, var(--navy-deep) 100%);
+  }
+  .perforation::before{ left:-31px; }
+  .perforation::after{ right:-31px; }
+
+  .stub-bottom{ padding:22px 24px 26px; text-align:center; background:var(--paper); flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+
+  .qr-frame{
+    width:130px; height:130px; margin:0 auto 14px; padding:8px; border-radius:12px;
+    background:var(--cream); border:1px solid #ece8dc; display:flex; align-items:center; justify-content:center;
+  }
+  .qr-frame img{ width:100%; height:100%; border-radius:6px; }
+  .qr-caption{ font-size:11px; color:var(--muted); margin-bottom:16px; }
+
+  .btn-open{
+    display:block; width:100%; padding:13px; border:none; border-radius:12px; text-decoration:none;
+    background:linear-gradient(180deg, var(--gold-light), var(--gold)); color:#fff;
+    font-family:inherit; font-weight:700; font-size:14px; letter-spacing:.01em;
+    box-shadow:0 8px 20px rgba(199,134,43,.35);
+    transition:transform .18s ease, box-shadow .18s ease, filter .18s ease;
+  }
+  .btn-open:hover{ transform:translateY(-2px); box-shadow:0 12px 26px rgba(199,134,43,.42); filter:brightness(1.03); }
+  .btn-open:active{ transform:translateY(0); }
+
+  .link-row{
+    margin-top:12px; display:flex; align-items:center; gap:6px;
+    background:var(--cream); border:1px solid #ece8dc; border-radius:10px; padding:8px 8px 8px 12px;
+  }
+  .link-row code{
+    flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+    font-family:'JetBrains Mono', monospace; font-size:10.5px; color:var(--muted); text-align:left;
+  }
+  .btn-copy{
+    flex-shrink:0; border:none; background:var(--navy); color:#fff; border-radius:7px; padding:6px 9px;
+    font-family:inherit; font-size:11px; font-weight:600; cursor:pointer;
+    transition:background-color .15s ease, transform .15s ease;
+  }
+  .btn-copy:hover{ background:var(--teal); }
+  .btn-copy.copied{ background:var(--teal); }
+</style>
+</head>
+<body>
+
+  <div class="wrap">
+    <header class="text-center mb-10">
+      <div class="inline-block bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full text-gold-light text-xs font-bold tracking-widest uppercase mb-3 border border-white/10">
+        UPT TPI · Kabupaten Rembang
+      </div>
+      <h1 class="font-['Fraunces'] text-3xl md:text-4xl font-bold text-white tracking-tight mb-3">
+        Karcis Lelang Ikan Terpusat
+      </h1>
+      <p class="text-slate-300 text-sm md:text-base max-w-xl mx-auto">
+        Akses portal pendaftaran &amp; input karcis lelang digital untuk 5 Unit Tempat Pendaratan Ikan (TPI) utama di wilayah Kabupaten Rembang.
+      </p>
+
+      <!-- Global Filter / Search Bar -->
+      <div class="mt-6 max-w-md mx-auto">
+        <div class="relative">
+          <span class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-slate-400">🔍</span>
+          <input type="text" id="searchInput" placeholder="Cari nama TPI atau wilayah..." 
+            class="w-full pl-11 pr-4 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-white placeholder-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent transition">
+        </div>
+      </div>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="tpiContainer">
+      <!-- Card 1 -->
+      <div class="tpi-card" data-name="karanganyar rembang">
+        <div class="ticket">
+          <div class="stub-top">
+            <div class="badge">🐟</div>
+            <h2>Karcis Lelang Ikan</h2>
+            <div class="tpi-name">TPI Karanganyar</div>
+            <p>Pusat pelelangan utama wilayah pesisir Karanganyar, Rembang.</p>
+          </div>
+          <div class="perforation"></div>
+          <div class="stub-bottom">
+            <div>
+              <div class="qr-frame">
+                <img class="qr-img" alt="QR TPI Karanganyar" data-url="https://script.google.com/macros/s/AKfycbxl7E-cvaTIb7gTglPW_mQTxjoIEQJkP64s-CzhJvOUk8gUG1liwYxzzRhubhrRodkKKA/exec" src="">
+              </div>
+              <div class="qr-caption">Scan kamera HP atau tap tombol di bawah</div>
+            </div>
+            <div>
+              <a href="https://script.google.com/macros/s/AKfycbxl7E-cvaTIb7gTglPW_mQTxjoIEQJkP64s-CzhJvOUk8gUG1liwYxzzRhubhrRodkKKA/exec" class="btn-open" target="_blank" rel="noopener">Buka Aplikasi →</a>
+              <div class="link-row">
+                <code class="link-text">https://script.google.com/macros/s/AKfycbxl7E-cvaTIb7gTglPW_mQTxjoIEQJkP64s-CzhJvOUk8gUG1liwYxzzRhubhrRodkKKA/exec</code>
+                <button type="button" class="btn-copy">Salin</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="tpi-card" data-name="tasikagung rembang">
+        <div class="ticket">
+          <div class="stub-top">
+            <div class="badge">⚓</div>
+            <h2>Karcis Lelang Ikan</h2>
+            <div class="tpi-name">TPI Tasikagung</div>
+            <p>Kawasan pelabuhan perikanan nusantara &amp; pelelangan ikan Tasikagung.</p>
+          </div>
+          <div class="perforation"></div>
+          <div class="stub-bottom">
+            <div>
+              <div class="qr-frame">
+                <img class="qr-img" alt="QR TPI Tasikagung" data-url="https://script.google.com/macros/s/AKfycbx_tasikagung_dummy_exec/exec" src="">
+              </div>
+              <div class="qr-caption">Scan kamera HP atau tap tombol di bawah</div>
+            </div>
+            <div>
+              <a href="https://script.google.com/macros/s/AKfycbx_tasikagung_dummy_exec/exec" class="btn-open" target="_blank" rel="noopener">Buka Aplikasi →</a>
+              <div class="link-row">
+                <code class="link-text">https://script.google.com/macros/s/AKfycbx_tasikagung_dummy_exec/exec</code>
+                <button type="button" class="btn-copy">Salin</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="tpi-card" data-name="Pojok Rembang">
+        <div class="ticket">
+          <div class="stub-top">
+            <div class="badge">⛵</div>
+            <h2>Karcis Lelang Ikan</h2>
+            <div class="tpi-name">TPI Pangkalan</div>
+            <p>Sentra transaksi nelayan lokal dan pelelangan harian Pangkalan.</p>
+          </div>
+          <div class="perforation"></div>
+          <div class="stub-bottom">
+            <div>
+              <div class="qr-frame">
+                <img class="qr-img" alt="QR TPI Pangkalan" data-url="https://script.google.com/macros/s/AKfycbx_pangkalan_dummy_exec/exec" src="">
+              </div>
+              <div class="qr-caption">Scan kamera HP atau tap tombol di bawah</div>
+            </div>
+            <div>
+              <a href="https://script.google.com/macros/s/AKfycbx_pangkalan_dummy_exec/exec" class="btn-open" target="_blank" rel="noopener">Buka Aplikasi →</a>
+              <div class="link-row">
+                <code class="link-text">https://script.google.com/macros/s/AKfycbx_pangkalan_dummy_exec/exec</code>
+                <button type="button" class="btn-copy">Salin</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="tpi-card" data-name="Taris Rembang Kragan">
+        <div class="ticket">
+          <div class="stub-top">
+            <div class="badge">🌊</div>
+            <h2>Karcis Lelang Ikan</h2>
+            <div class="tpi-name">TPI Kragan</div>
+            <p>Pusat pelelangan ikan strategis di wilayah pesisir timur Kragan.</p>
+          </div>
+          <div class="perforation"></div>
+          <div class="stub-bottom">
+            <div>
+              <div class="qr-frame">
+                <img class="qr-img" alt="QR TPI Kragan" data-url="https://script.google.com/macros/s/AKfycbx_kragan_dummy_exec/exec" src="">
+              </div>
+              <div class="qr-caption">Scan kamera HP atau tap tombol di bawah</div>
+            </div>
+            <div>
+              <a href="https://script.google.com/macros/s/AKfycbx_kragan_dummy_exec/exec" class="btn-open" target="_blank" rel="noopener">Buka Aplikasi →</a>
+              <div class="link-row">
+                <code class="link-text">https://script.google.com/macros/s/AKfycbx_kragan_dummy_exec/exec</code>
+                <button type="button" class="btn-copy">Salin</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 5 -->
+      <div class="tpi-card md:col-span-2 lg:col-span-1" data-name="Sluke Rembang">
+        <div class="ticket">
+          <div class="stub-top">
+            <div class="badge">🚤</div>
+            <h2>Karcis Lelang Ikan</h2>
+            <div class="tpi-name">TPI Sluke</div>
+            <p>Unit pelabuhan &amp; pelelangan ikan aktif di jalur pantai Sluke.</p>
+          </div>
+          <div class="perforation"></div>
+          <div class="stub-bottom">
+            <div>
+              <div class="qr-frame">
+                <img class="qr-img" alt="QR TPI Sluke" data-url="https://script.google.com/macros/s/AKfycbx_sluke_dummy_exec/exec" src="">
+              </div>
+              <div class="qr-caption">Scan kamera HP atau tap tombol di bawah</div>
+            </div>
+            <div>
+              <a href="https://script.google.com/macros/s/AKfycbx_sluke_dummy_exec/exec" class="btn-open" target="_blank" rel="noopener">Buka Aplikasi →</a>
+              <div class="link-row">
+                <code class="link-text">https://script.google.com/macros/s/AKfycbx_sluke_dummy_exec/exec</code>
+                <button type="button" class="btn-copy">Salin</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- No results message -->
+    <div id="noResults" class="hidden text-center py-16 text-slate-300">
+      <p class="text-lg">Tidak ada TPI yang cocok dengan pencarian Anda.</p>
+    </div>
+
+    <footer class="text-center mt-14 text-slate-300 text-xs md:text-sm">
+      Dikelola oleh <b>UPT TPI Kabupaten Rembang</b> · Didukung oleh Rumah Koding Rembang
+    </footer>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function(){
+      // Generate QR codes dynamically for all cards
+      const qrImages = document.querySelectorAll('.qr-img');
+      qrImages.forEach(img => {
+        const url = img.getAttribute('data-url');
+        if(url){
+          img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=0&color=1E2A44&data=' + encodeURIComponent(url);
+        }
+      });
+
+      // Handle copy buttons
+      const copyButtons = document.querySelectorAll('.btn-copy');
+      copyButtons.forEach(btn => {
+        btn.addEventListener('click', function(){
+          const linkRow = this.closest('.link-row');
+          const codeEl = linkRow.querySelector('code');
+          const textToCopy = codeEl.textContent;
+          
+          const currentBtn = this;
+          navigator.clipboard.writeText(textToCopy).then(function(){
+            currentBtn.textContent = '✓ Tersalin';
+            currentBtn.classList.add('copied');
+            setTimeout(function(){
+              currentBtn.textContent = 'Salin';
+              currentBtn.classList.remove('copied');
+            }, 1800);
+          }).catch(function(){
+            currentBtn.textContent = 'Gagal';
+          });
+        });
+      });
+
+      // Handle live search filter
+      const searchInput = document.getElementById('searchInput');
+      const tpiCards = document.querySelectorAll('.tpi-card');
+      const noResults = document.getElementById('noResults');
+
+      searchInput.addEventListener('input', function(e){
+        const term = e.target.value.toLowerCase().trim();
+        let matchCount = 0;
+
+        tpiCards.forEach(card => {
+          const name = card.getAttribute('data-name').toLowerCase();
+          const textContent = card.textContent.toLowerCase();
+          if(name.includes(term) || textContent.includes(term)){
+            card.classList.remove('hidden');
+            matchCount++;
+          } else {
+            card.classList.add('hidden');
+          }
+        });
+
+        if(matchCount === 0){
+          noResults.classList.remove('hidden');
+        } else {
+          noResults.classList.add('hidden');
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
