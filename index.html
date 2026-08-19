@@ -42,20 +42,16 @@
   }
   @media (prefers-reduced-motion: reduce){ *{ animation-duration:.001ms !important; transition-duration:.001ms !important; } }
 
-  .wrap{ width:100%; max-width:1200px; margin:0 auto; padding:40px 20px; animation:riseIn .5s cubic-bezier(.2,.8,.2,1) both; }
+  .wrap{ width:100%; max-width:900px; margin:0 auto; padding:40px 20px; animation:riseIn .5s cubic-bezier(.2,.8,.2,1) both; }
   @keyframes riseIn{ from{ opacity:0; transform:translateY(14px); } to{ opacity:1; transform:translateY(0); } }
 
   /* Ticket card component styling */
   .ticket{
     background:var(--paper); border-radius:24px; overflow:hidden;
     box-shadow:0 24px 60px rgba(0,0,0,.35), 0 2px 8px rgba(0,0,0,.12);
-    display: flex; flex-direction: column; height: 100%;
+    display: flex; flex-direction: column; width: 100%; max-width: 420px; margin: 0 auto;
     transition: transform 0.25s ease, box-shadow 0.25s ease;
     border: 1px solid rgba(255,255,255,0.1);
-  }
-  .ticket:hover{
-    transform: translateY(-4px);
-    box-shadow: 0 30px 70px rgba(0,0,0,.45), 0 4px 12px rgba(0,0,0,.2);
   }
   .stub-top{
     padding:28px 24px 20px; text-align:center;
@@ -73,7 +69,7 @@
     letter-spacing:-.01em;
   }
   .stub-top .tpi-name{
-    font-family:'Fraunces', serif; font-weight:700; font-size:16px; color:var(--gold);
+    font-family:'Fraunces', serif; font-weight:700; font-size:18px; color:var(--gold);
   }
   .stub-top p{
     margin:10px 0 0; font-size:12.5px; line-height:1.5; color:var(--muted);
@@ -90,24 +86,31 @@
   .perforation::before{ left:-31px; }
   .perforation::after{ right:-31px; }
 
-  .stub-bottom{ padding:22px 24px 26px; text-align:center; background:var(--paper); flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+  .stub-bottom{ padding:22px 24px 26px; text-align:center; background:var(--paper); display: flex; flex-direction: column; justify-content: space-between; }
 
   .qr-frame{
-    width:130px; height:130px; margin:0 auto 14px; padding:8px; border-radius:12px;
+    width:150px; height:150px; margin:0 auto 14px; padding:8px; border-radius:12px;
     background:var(--cream); border:1px solid #ece8dc; display:flex; align-items:center; justify-content:center;
   }
   .qr-frame img{ width:100%; height:100%; border-radius:6px; }
   .qr-caption{ font-size:11px; color:var(--muted); margin-bottom:16px; }
 
-  .btn-open{
+  .btn-primary{
     display:block; width:100%; padding:13px; border:none; border-radius:12px; text-decoration:none;
     background:linear-gradient(180deg, var(--gold-light), var(--gold)); color:#fff;
-    font-family:inherit; font-weight:700; font-size:14px; letter-spacing:.01em;
+    font-family:inherit; font-weight:700; font-size:14px; letter-spacing:.01em; cursor:pointer;
     box-shadow:0 8px 20px rgba(199,134,43,.35);
     transition:transform .18s ease, box-shadow .18s ease, filter .18s ease;
   }
-  .btn-open:hover{ transform:translateY(-2px); box-shadow:0 12px 26px rgba(199,134,43,.42); filter:brightness(1.03); }
-  .btn-open:active{ transform:translateY(0); }
+  .btn-primary:hover{ transform:translateY(-2px); box-shadow:0 12px 26px rgba(199,134,43,.42); filter:brightness(1.03); }
+  .btn-primary:active{ transform:translateY(0); }
+
+  .btn-share{
+    display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:11px; border:1px solid #ece8dc; border-radius:12px;
+    background:var(--cream); color:var(--navy); font-family:inherit; font-weight:600; font-size:13px; cursor:pointer;
+    transition:background-color .15s ease, transform .15s ease; margin-top:10px;
+  }
+  .btn-share:hover{ background:#eee8dc; }
 
   .link-row{
     margin-top:12px; display:flex; align-items:center; gap:6px;
@@ -120,10 +123,9 @@
   .btn-copy{
     flex-shrink:0; border:none; background:var(--navy); color:#fff; border-radius:7px; padding:6px 9px;
     font-family:inherit; font-size:11px; font-weight:600; cursor:pointer;
-    transition:background-color .15s ease, transform .15s ease;
+    transition:background-color .15s ease;
   }
-  .btn-copy:hover{ background:var(--teal); }
-  .btn-copy.copied{ background:var(--teal); }
+  .btn-copy:hover, .btn-copy.copied{ background:var(--teal); }
 </style>
 </head>
 <body>
@@ -137,164 +139,86 @@
         Karcis Lelang Ikan Terpusat
       </h1>
       <p class="text-slate-300 text-sm md:text-base max-w-xl mx-auto">
-        Akses portal pendaftaran &amp; input karcis lelang digital untuk 5 Unit Tempat Pendaratan Ikan (TPI) utama di wilayah Kabupaten Rembang.
+        Silakan pilih Unit Tempat Pendaratan Ikan (TPI) tujuan Anda di bawah ini untuk menampilkan karcis digital dan opsi bagikan QR code.
       </p>
 
-      <!-- Global Filter / Search Bar -->
-      <div class="mt-6 max-w-md mx-auto">
+      <!-- TPI Selector Dropdown -->
+      <div class="mt-8 max-w-md mx-auto">
+        <label for="tpiSelect" class="block text-left text-xs font-semibold text-slate-300 mb-2 uppercase tracking-wider">Pilih Lokasi UPT TPI:</label>
         <div class="relative">
-          <span class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-slate-400">🔍</span>
-          <input type="text" id="searchInput" placeholder="Cari nama TPI atau wilayah..." 
-            class="w-full pl-11 pr-4 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-white placeholder-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent transition">
+          <select id="tpiSelect" class="w-full px-4 py-3.5 bg-white/15 backdrop-blur-md border border-white/30 rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent transition cursor-pointer appearance-none">
+            <option value="" disabled selected class="bg-slate-800 text-slate-400">-- Pilih Unit TPI Wilayah Rembang --</option>
+            <option value="karanganyar" class="bg-slate-800 text-white">TPI Karanganyar</option>
+            <option value="tasikagung" class="bg-slate-800 text-white">TPI Tasikagung</option>
+            <option value="pangkalan" class="bg-slate-800 text-white">TPI Pangkalan</option>
+            <option value="kragan" class="bg-slate-800 text-white">TPI Kragan</option>
+            <option value="sluke" class="bg-slate-800 text-white">TPI Sluke</option>
+          </select>
+          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-white">
+            ▼
+          </div>
         </div>
       </div>
     </header>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="tpiContainer">
-      <!-- Card 1 -->
-      <div class="tpi-card" data-name="karanganyar rembang">
-        <div class="ticket">
-          <div class="stub-top">
-            <div class="badge">🐟</div>
-            <h2>Karcis Lelang Ikan</h2>
-            <div class="tpi-name">TPI Karanganyar</div>
-            <p>Pusat pelelangan utama wilayah pesisir Karanganyar, Rembang.</p>
-          </div>
-          <div class="perforation"></div>
-          <div class="stub-bottom">
-            <div>
-              <div class="qr-frame">
-                <img class="qr-img" alt="QR TPI Karanganyar" data-url="https://script.google.com/macros/s/AKfycbwkmy5T-cyLyNqdgWgQDHgQsVGEvExQWvnvQrMsGeR_9jEdffIcqRDi-5gHaEWJvloI4A/exec" src="">
-              </div>
-              <div class="qr-caption">Scan kamera HP atau tap tombol di bawah</div>
-            </div>
-            <div>
-              <a href="https://script.google.com/macros/s/AKfycbwkmy5T-cyLyNqdgWgQDHgQsVGEvExQWvnvQrMsGeR_9jEdffIcqRDi-5gHaEWJvloI4A/exec" class="btn-open" target="_blank" rel="noopener">Buka Aplikasi →</a>
-              <div class="link-row">
-                <code class="link-text">https://script.google.com/macros/s/AKfycbwkmy5T-cyLyNqdgWgQDHgQsVGEvExQWvnvQrMsGeR_9jEdffIcqRDi-5gHaEWJvloI4A/exec</code>
-                <button type="button" class="btn-copy">Salin</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+    <!-- Placeholder / Initial State before selection -->
+    <div id="initialPrompt" class="text-center py-16 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10">
+      <div class="text-4xl mb-3">⚓</div>
+      <h3 class="text-white font-semibold text-lg mb-1">Belum Ada TPI yang Dipilih</h3>
+      <p class="text-slate-400 text-sm">Gunakan pilihan di atas untuk memuat karcis lelang ikan.</p>
+    </div>
 
-      <!-- Card 2 -->
-      <div class="tpi-card" data-name="tasikagung rembang">
-        <div class="ticket">
-          <div class="stub-top">
-            <div class="badge">⚓</div>
-            <h2>Karcis Lelang Ikan</h2>
-            <div class="tpi-name">TPI Tasikagung</div>
-            <p>Kawasan pelabuhan perikanan nusantara &amp; pelelangan ikan Tasikagung.</p>
-          </div>
-          <div class="perforation"></div>
-          <div class="stub-bottom">
-            <div>
-              <div class="qr-frame">
-                <img class="qr-img" alt="QR TPI Tasikagung" data-url="https://script.google.com/macros/s/AKfycbx_tasikagung_dummy_exec/exec" src="">
-              </div>
-              <div class="qr-caption">Scan kamera HP atau tap tombol di bawah</div>
-            </div>
-            <div>
-              <a href="https://script.google.com/macros/s/AKfycbx_tasikagung_dummy_exec/exec" class="btn-open" target="_blank" rel="noopener">Buka Aplikasi →</a>
-              <div class="link-row">
-                <code class="link-text">https://script.google.com/macros/s/AKfycbx_tasikagung_dummy_exec/exec</code>
-                <button type="button" class="btn-copy">Salin</button>
-              </div>
-            </div>
-          </div>
+    <!-- Dynamic Ticket Card Container (Hidden initially) -->
+    <div id="ticketContainer" class="hidden">
+      <div class="ticket">
+        <div class="stub-top">
+          <div class="badge" id="cardBadge">🐟</div>
+          <h2>Karcis Lelang Ikan</h2>
+          <div class="tpi-name" id="cardTpiName">TPI Karanganyar</div>
+          <p id="cardDesc">Pusat pelelangan utama wilayah pesisir.</p>
         </div>
-      </div>
-
-      <!-- Card 3 -->
-      <div class="tpi-card" data-name="Pojok Rembang">
-        <div class="ticket">
-          <div class="stub-top">
-            <div class="badge">⛵</div>
-            <h2>Karcis Lelang Ikan</h2>
-            <div class="tpi-name">TPI Pangkalan</div>
-            <p>Sentra transaksi nelayan lokal dan pelelangan harian Pangkalan.</p>
-          </div>
-          <div class="perforation"></div>
-          <div class="stub-bottom">
-            <div>
-              <div class="qr-frame">
-                <img class="qr-img" alt="QR TPI Pangkalan" data-url="https://script.google.com/macros/s/AKfycbx_pangkalan_dummy_exec/exec" src="">
-              </div>
-              <div class="qr-caption">Scan kamera HP atau tap tombol di bawah</div>
+        <div class="perforation"></div>
+        <div class="stub-bottom">
+          <div>
+            <div class="qr-frame">
+              <img id="cardQrImg" alt="QR Code TPI" src="">
             </div>
-            <div>
-              <a href="https://script.google.com/macros/s/AKfycbx_pangkalan_dummy_exec/exec" class="btn-open" target="_blank" rel="noopener">Buka Aplikasi →</a>
-              <div class="link-row">
-                <code class="link-text">https://script.google.com/macros/s/AKfycbx_pangkalan_dummy_exec/exec</code>
-                <button type="button" class="btn-copy">Salin</button>
-              </div>
-            </div>
+            <div class="qr-caption">Scan kamera HP atau gunakan menu di bawah</div>
           </div>
-        </div>
-      </div>
-
-      <!-- Card 4 -->
-      <div class="tpi-card" data-name="Taris Rembang Kragan">
-        <div class="ticket">
-          <div class="stub-top">
-            <div class="badge">🌊</div>
-            <h2>Karcis Lelang Ikan</h2>
-            <div class="tpi-name">TPI Kragan</div>
-            <p>Pusat pelelangan ikan strategis di wilayah pesisir timur Kragan.</p>
-          </div>
-          <div class="perforation"></div>
-          <div class="stub-bottom">
-            <div>
-              <div class="qr-frame">
-                <img class="qr-img" alt="QR TPI Kragan" data-url="https://script.google.com/macros/s/AKfycbx_kragan_dummy_exec/exec" src="">
-              </div>
-              <div class="qr-caption">Scan kamera HP atau tap tombol di bawah</div>
-            </div>
-            <div>
-              <a href="https://script.google.com/macros/s/AKfycbx_kragan_dummy_exec/exec" class="btn-open" target="_blank" rel="noopener">Buka Aplikasi →</a>
-              <div class="link-row">
-                <code class="link-text">https://script.google.com/macros/s/AKfycbx_kragan_dummy_exec/exec</code>
-                <button type="button" class="btn-copy">Salin</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Card 5 -->
-      <div class="tpi-card md:col-span-2 lg:col-span-1" data-name="Sluke Rembang">
-        <div class="ticket">
-          <div class="stub-top">
-            <div class="badge">🚤</div>
-            <h2>Karcis Lelang Ikan</h2>
-            <div class="tpi-name">TPI Sluke</div>
-            <p>Unit pelabuhan &amp; pelelangan ikan aktif di jalur pantai Sluke.</p>
-          </div>
-          <div class="perforation"></div>
-          <div class="stub-bottom">
-            <div>
-              <div class="qr-frame">
-                <img class="qr-img" alt="QR TPI Sluke" data-url="https://script.google.com/macros/s/AKfycbx_sluke_dummy_exec/exec" src="">
-              </div>
-              <div class="qr-caption">Scan kamera HP atau tap tombol di bawah</div>
-            </div>
-            <div>
-              <a href="https://script.google.com/macros/s/AKfycbx_sluke_dummy_exec/exec" class="btn-open" target="_blank" rel="noopener">Buka Aplikasi →</a>
-              <div class="link-row">
-                <code class="link-text">https://script.google.com/macros/s/AKfycbx_sluke_dummy_exec/exec</code>
-                <button type="button" class="btn-copy">Salin</button>
-              </div>
+          <div class="space-y-2">
+            <a id="cardLinkBtn" href="#" class="btn-primary" target="_blank" rel="noopener">Buka Aplikasi Lelang →</a>
+            <button type="button" id="cardShareBtn" class="btn-share">
+              <span>📤</span> Bagikan QR Code &amp; Link
+            </button>
+            <div class="link-row">
+              <code id="cardLinkCode" class="link-text">-</code>
+              <button type="button" id="cardCopyBtn" class="btn-copy">Salin</button>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- No results message -->
-    <div id="noResults" class="hidden text-center py-16 text-slate-300">
-      <p class="text-lg">Tidak ada TPI yang cocok dengan pencarian Anda.</p>
+    <!-- Share Modal -->
+    <div id="shareModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+      <div class="bg-white rounded-2xl max-w-sm w-full p-6 text-center shadow-2xl relative animate-riseIn">
+        <button type="button" id="closeModal" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-lg font-bold w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">✕</button>
+        <h3 class="font-['Fraunces'] text-xl font-bold text-navy mb-1" id="modalTitle">Bagikan Karcis TPI</h3>
+        <p class="text-xs text-slate-500 mb-4" id="modalSubtitle">Scan atau bagikan tautan ini kepada Petugas TPI yang bersangkutan</p>
+        
+        <div class="w-48 h-48 mx-auto bg-slate-50 border border-slate-200 rounded-xl p-2 mb-4 flex items-center justify-center">
+          <img id="modalQrImg" alt="QR Code" class="w-full h-full rounded-lg">
+        </div>
+
+        <div class="space-y-2">
+          <button type="button" id="whatsappShare" class="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl text-sm transition flex items-center justify-center gap-2">
+            <span>💚</span> Bagikan ke WhatsApp
+          </button>
+          <button type="button" id="modalCopyBtn" class="w-full py-2.5 px-4 bg-slate-100 hover:bg-slate-200 text-navy font-semibold rounded-xl text-sm transition">
+            📋 Salin Link Tautan
+          </button>
+        </div>
+      </div>
     </div>
 
     <footer class="text-center mt-14 text-slate-300 text-xs md:text-sm">
@@ -304,62 +228,135 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function(){
-      // Generate QR codes dynamically for all cards
-      const qrImages = document.querySelectorAll('.qr-img');
-      qrImages.forEach(img => {
-        const url = img.getAttribute('data-url');
-        if(url){
-          img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=0&color=1E2A44&data=' + encodeURIComponent(url);
+      // TPI Database
+      const tpiData = {
+        karanganyar: {
+          name: "TPI Karanganyar",
+          badge: "🐟",
+          desc: "Pusat pelelangan utama wilayah pesisir Karanganyar, Rembang.",
+          url: "https://script.google.com/macros/s/AKfycbwkmy5T-cyLyNqdgWgQDHgQsVGEvExQWvnvQrMsGeR_9jEdffIcqRDi-5gHaEWJvloI4A/exec"
+        },
+        tasikagung: {
+          name: "TPI Tasikagung",
+          badge: "⚓",
+          desc: "Kawasan pelabuhan perikanan nusantara & pelelangan ikan Tasikagung.",
+          url: "https://script.google.com/macros/s/AKfycbx_tasikagung_dummy_exec/exec"
+        },
+        pangkalan: {
+          name: "TPI Pangkalan",
+          badge: "⛵",
+          desc: "Sentra transaksi nelayan lokal dan pelelangan harian Pangkalan.",
+          url: "https://script.google.com/macros/s/AKfycbx_pangkalan_dummy_exec/exec"
+        },
+        kragan: {
+          name: "TPI Kragan",
+          badge: "🌊",
+          desc: "Pusat pelelangan ikan strategis di wilayah pesisir timur Kragan.",
+          url: "https://script.google.com/macros/s/AKfycbx_kragan_dummy_exec/exec"
+        },
+        sluke: {
+          name: "TPI Sluke",
+          badge: "🚤",
+          desc: "Unit pelabuhan & pelelangan ikan aktif di jalur pantai Sluke.",
+          url: "https://script.google.com/macros/s/AKfycbx_sluke_dummy_exec/exec"
         }
+      };
+
+      const tpiSelect = document.getElementById('tpiSelect');
+      const initialPrompt = document.getElementById('initialPrompt');
+      const ticketContainer = document.getElementById('ticketContainer');
+      
+      const cardBadge = document.getElementById('cardBadge');
+      const cardTpiName = document.getElementById('cardTpiName');
+      const cardDesc = document.getElementById('cardDesc');
+      const cardQrImg = document.getElementById('cardQrImg');
+      const cardLinkBtn = document.getElementById('cardLinkBtn');
+      const cardLinkCode = document.getElementById('cardLinkCode');
+      const cardCopyBtn = document.getElementById('cardCopyBtn');
+      const cardShareBtn = document.getElementById('cardShareBtn');
+
+      // Modal elements
+      const shareModal = document.getElementById('shareModal');
+      const closeModal = document.getElementById('closeModal');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalSubtitle = document.getElementById('modalSubtitle');
+      const modalQrImg = document.getElementById('modalQrImg');
+      const whatsappShare = document.getElementById('whatsappShare');
+      const modalCopyBtn = document.getElementById('modalCopyBtn');
+
+      let currentSelectedUrl = '';
+      let currentSelectedName = '';
+
+      tpiSelect.addEventListener('change', function(){
+        const key = this.value;
+        const data = tpiData[key];
+        if(!data) return;
+
+        currentSelectedUrl = data.url;
+        currentSelectedName = data.name;
+
+        // Update card contents
+        cardBadge.textContent = data.badge;
+        cardTpiName.textContent = data.name;
+        cardDesc.textContent = data.desc;
+        
+        const qrApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=0&color=1E2A44&data=' + encodeURIComponent(data.url);
+        cardQrImg.src = qrApiUrl;
+        modalQrImg.src = qrApiUrl;
+
+        cardLinkBtn.href = data.url;
+        cardLinkCode.textContent = data.url;
+
+        // Show ticket and hide prompt with smooth effect
+        initialPrompt.classList.add('hidden');
+        ticketContainer.classList.remove('hidden');
       });
 
-      // Handle copy buttons
-      const copyButtons = document.querySelectorAll('.btn-copy');
-      copyButtons.forEach(btn => {
-        btn.addEventListener('click', function(){
-          const linkRow = this.closest('.link-row');
-          const codeEl = linkRow.querySelector('code');
-          const textToCopy = codeEl.textContent;
-          
-          const currentBtn = this;
-          navigator.clipboard.writeText(textToCopy).then(function(){
-            currentBtn.textContent = '✓ Tersalin';
-            currentBtn.classList.add('copied');
-            setTimeout(function(){
-              currentBtn.textContent = 'Salin';
-              currentBtn.classList.remove('copied');
-            }, 1800);
-          }).catch(function(){
-            currentBtn.textContent = 'Gagal';
-          });
+      // Copy link inside card
+      cardCopyBtn.addEventListener('click', function(){
+        navigator.clipboard.writeText(currentSelectedUrl).then(() => {
+          cardCopyBtn.textContent = '✓ Tersalin';
+          cardCopyBtn.classList.add('copied');
+          setTimeout(() => {
+            cardCopyBtn.textContent = 'Salin';
+            cardCopyBtn.classList.remove('copied');
+          }, 1800);
         });
       });
 
-      // Handle live search filter
-      const searchInput = document.getElementById('searchInput');
-      const tpiCards = document.querySelectorAll('.tpi-card');
-      const noResults = document.getElementById('noResults');
+      // Share button opens modal
+      cardShareBtn.addEventListener('click', function(){
+        modalTitle.textContent = 'Bagikan ' + currentSelectedName;
+        shareModal.classList.remove('hidden');
+      });
 
-      searchInput.addEventListener('input', function(e){
-        const term = e.target.value.toLowerCase().trim();
-        let matchCount = 0;
+      closeModal.addEventListener('click', function(){
+        shareModal.classList.add('hidden');
+      });
 
-        tpiCards.forEach(card => {
-          const name = card.getAttribute('data-name').toLowerCase();
-          const textContent = card.textContent.toLowerCase();
-          if(name.includes(term) || textContent.includes(term)){
-            card.classList.remove('hidden');
-            matchCount++;
-          } else {
-            card.classList.add('hidden');
-          }
-        });
-
-        if(matchCount === 0){
-          noResults.classList.remove('hidden');
-        } else {
-          noResults.classList.add('hidden');
+      shareModal.addEventListener('click', function(e){
+        if(e.target === shareModal){
+          shareModal.classList.add('hidden');
         }
+      });
+
+      // WhatsApp share action
+      whatsappShare.addEventListener('click', function(){
+        const message = `Halo, berikut adalah link Karcis Lelang Digital untuk *${currentSelectedName}* UPT TPI Kabupaten Rembang:\n\n${currentSelectedUrl}\n\nSilakan diakses untuk melakukan pendaftaran atau input karcis lelang. Terima kasih!`;
+        const waUrl = `https://api.whatsapp.com/send?text=` + encodeURIComponent(message);
+        window.open(waUrl, '_blank');
+      });
+
+      // Modal copy button action
+      modalCopyBtn.addEventListener('click', function(){
+        navigator.clipboard.writeText(currentSelectedUrl).then(() => {
+          modalCopyBtn.textContent = '✓ Berhasil Disalin ke Clipboard!';
+          modalCopyBtn.classList.add('bg-emerald-100', 'text-emerald-800');
+          setTimeout(() => {
+            modalCopyBtn.textContent = '📋 Salin Link Tautan';
+            modalCopyBtn.classList.remove('bg-emerald-100', 'text-emerald-800');
+          }, 2000);
+        });
       });
     });
   </script>
